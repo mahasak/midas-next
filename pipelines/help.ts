@@ -1,10 +1,18 @@
 import { Context, MiddlewareNextAction } from "@/commons/Pipeline"
 import { sendTextMessage } from "@/services/MessengerAPI";
 
+import { Redis } from '@upstash/redis'
+
+
+const redis = new Redis({
+  url: process.env.UPSTASH_URL,
+  token: process.env.UPSTASH_TOKEN,
+})
+
 export const helpCommand = async (ctx: Context, next: MiddlewareNextAction) => {
     
     if (ctx.message?.text.toString().startsWith("#help")) {
-        const count = ctx.cache.get("count") as number
+        const count = await redis.get('count') as number;
         const instructionText = "Available commands:\n\n"
             + "#order - get default order XMA\n\n"
             + "#menu - get item menu\n\n"
@@ -14,7 +22,7 @@ export const helpCommand = async (ctx: Context, next: MiddlewareNextAction) => {
             + `count = ${count}`
 
         await sendTextMessage(ctx.page_scope_id, instructionText)
-        ctx.cache.set("count", count+1)
+        await redis.set('count', count+1);
         
         
         ctx.should_end = true;

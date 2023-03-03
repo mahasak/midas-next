@@ -4,15 +4,20 @@ import { Context, Pipeline } from '@/commons/Pipeline'
 import { greetCommand } from '@/pipelines/greet'
 import { helpCommand } from '@/pipelines/help'
 import { markSeen } from '@/services/MessengerAPI'
-import NodeCache from 'node-cache'
+
+import { Redis } from '@upstash/redis'
+
+
+const redis = new Redis({
+  url: process.env.UPSTASH_URL,
+  token: process.env.UPSTASH_TOKEN,
+})
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 const PAGE_ID =  process.env.PAGE_ID
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN
 
-const cache = new NodeCache({stdTTL: 15})
-cache.set('count', 1)
 
 export default function handler(
     req: NextApiRequest,
