@@ -1,5 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { MessagingEvent, PageEntry } from '@/commons/MessengerInterfaces'
+import { Context, Pipeline } from '@/commons/Pipeline'
+import { greetCommand } from '@/pipelines/greet'
+import { helpCommand } from '@/pipelines/help'
 import { markSeen } from '@/services/MessengerAPI'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -46,7 +49,6 @@ const webhook = (req: NextApiRequest, res: NextApiResponse) => {
 
             pageEntry.messaging.forEach(async (event: MessagingEvent) => {
                 if (event.message) {
-                    // do something
                     await processMessageEvent(event)
                 } else if (event.optin) {
                     // do something
@@ -79,7 +81,19 @@ const processMessageEvent = async (event: MessagingEvent) => {
 
     // only handle message from user not page
     if (pageScopeID != PAGE_ID) {
-        
+        let ctx: Context = {
+            page_scope_id: pageScopeID,
+            message: message,
+            should_end: false
+        }
+
+        const pipeline = Pipeline()
+        pipeline.push(helpCommand)
+        pipeline.push(greetCommand)
+
+        if(message.text) {
+            await pipeline.execute(ctx)
+        }
     }
 
     if (isEcho) {

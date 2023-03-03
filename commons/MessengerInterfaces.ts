@@ -4,16 +4,18 @@ export interface PageEntry {
     messaging: []
 }
 
+export interface IncomingMessage {
+    is_echo: boolean;
+    app_id: string;
+    metadata: string;
+    mid: string;
+    text: string;
+    attachments: MessageAttachment;
+    quick_reply: MessageQuick_Reply;
+}
+
 export interface MessagingEvent {
-    message: {
-        is_echo: boolean;
-        app_id: string;
-        metadata: string;
-        mid: string;
-        text: string;
-        attachments: MessageAttachment;
-        quick_reply: MessageQuick_Reply;
-    };
+    message: IncomingMessage;
     delivery: MessagingDelivery;
     postback: MessagingPostback;
     read: {
@@ -40,6 +42,11 @@ export interface MessagingEvent {
 export interface MessengerAPIPayload {
     recipient: MessagesRecipient;
     sender_action?: string;
+    message?: MessagePayload;
+}
+
+interface MessagePayload {
+    text: string;
 }
 
 export interface MessagesSender {

@@ -31,6 +31,19 @@ const callSendAPI = async (payload: MessengerAPIPayload) => {
     }
 }
 
+export const sendTextMessage = async (recipientId: string, messageText: string) => {
+    const messageData: MessengerAPIPayload = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: messageText
+        }
+    }
+
+    await callSendAPI(messageData)
+}
+
 export const markSeen = async (psid: string) => {
     const messageData: MessengerAPIPayload = {
         recipient: {
