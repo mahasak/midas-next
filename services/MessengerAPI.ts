@@ -10,7 +10,7 @@ type MessengerAPIResponse = {
 
 const callSendAPI = async (payload: MessengerAPIPayload) => {
     try {
-        const res = await fetch('https://graph.facebook.com/v14.0/' + PAGE_ID + '/messages?access_token=' + ACCESS_TOKEN, {
+        const res = await fetch('https://graph.facebook.com/v15.0/' + PAGE_ID + '/messages?access_token=' + ACCESS_TOKEN, {
             method: 'POST',
             body: JSON.stringify(payload),
             headers: { 'Content-Type': 'application/json' }
