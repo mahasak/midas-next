@@ -1,8 +1,6 @@
-import NodeCache from "node-cache";
 import { IncomingMessage } from "./MessengerInterfaces";
 
 export type Context = {
-    cache: NodeCache;
     message: IncomingMessage;
     page_scope_id: string;
     order_id?: string;

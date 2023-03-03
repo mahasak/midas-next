@@ -93,7 +93,6 @@ const processMessageEvent = async (event: MessagingEvent) => {
     // only handle message from user not page
     if (pageScopeID != PAGE_ID) {
         let ctx: Context = {
-            cache: cache,
             page_scope_id: pageScopeID,
             message: message,
             should_end: false
