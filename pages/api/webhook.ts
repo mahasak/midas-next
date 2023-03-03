@@ -4,11 +4,15 @@ import { Context, Pipeline } from '@/commons/Pipeline'
 import { greetCommand } from '@/pipelines/greet'
 import { helpCommand } from '@/pipelines/help'
 import { markSeen } from '@/services/MessengerAPI'
+import NodeCache from 'node-cache'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 const PAGE_ID =  process.env.PAGE_ID
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN
+
+const cache = new NodeCache({stdTTL: 15})
+cache.set('count', 1)
 
 export default function handler(
     req: NextApiRequest,
@@ -23,6 +27,8 @@ export default function handler(
             break
     }
 }
+
+
 
 const verifySubscription = (req: NextApiRequest, res: NextApiResponse) => {
     const mode = req.query['hub.mode']?.toString() ?? ''
@@ -82,11 +88,13 @@ const processMessageEvent = async (event: MessagingEvent) => {
     // only handle message from user not page
     if (pageScopeID != PAGE_ID) {
         let ctx: Context = {
+            cache: cache,
             page_scope_id: pageScopeID,
             message: message,
             should_end: false
         }
 
+        // setup execution pipeline
         const pipeline = Pipeline()
         pipeline.push(helpCommand)
         pipeline.push(greetCommand)
