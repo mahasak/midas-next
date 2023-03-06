@@ -21,7 +21,8 @@ const callSendAPI = async (payload: MessengerAPIPayload) => {
         const data = await res.json() as MessengerAPIResponse
         const recipientId = data.recipient_id ?? ''
         const messageId = data.message_id ?? ''
-
+        console.log('called send message API')
+        console.log(data)
         if (res.ok) {
             // log success
             console.log("success")
