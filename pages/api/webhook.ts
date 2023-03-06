@@ -5,14 +5,6 @@ import { greetCommand } from '@/pipelines/greet'
 import { helpCommand } from '@/pipelines/help'
 import { markSeen } from '@/services/MessengerAPI'
 
-import { Redis } from '@upstash/redis'
-
-
-const redis = new Redis({
-  url: process.env.UPSTASH_URL,
-  token: process.env.UPSTASH_TOKEN,
-})
-
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 const PAGE_ID =  process.env.PAGE_ID
@@ -82,6 +74,7 @@ const webhook = (req: NextApiRequest, res: NextApiResponse) => {
 }
 
 const processMessageEvent = async (event: MessagingEvent) => {
+    console.log('process message')
     const pageScopeID = event.sender.id
     const message = event.message
     const isEcho = message.is_echo
@@ -102,7 +95,7 @@ const processMessageEvent = async (event: MessagingEvent) => {
         const pipeline = Pipeline()
         pipeline.push(helpCommand)
         pipeline.push(greetCommand)
-
+        console.log('check message type')
         if(message.text) {
             await pipeline.execute(ctx)
         }
