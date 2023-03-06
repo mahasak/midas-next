@@ -10,6 +10,7 @@ type MessengerAPIResponse = {
 
 const callSendAPI = async (payload: MessengerAPIPayload) => {
     try {
+        console.log('sending message API')
         const res = await fetch('https://graph.facebook.com/v15.0/' + PAGE_ID + '/messages?access_token=' + ACCESS_TOKEN, {
             method: 'POST',
             body: JSON.stringify(payload),
@@ -37,6 +38,7 @@ const callSendAPI = async (payload: MessengerAPIPayload) => {
 }
 
 export const sendTextMessage = async (recipientId: string, messageText: string) => {
+    console.log('send text message API')
     const messageData: MessengerAPIPayload = {
         recipient: {
             id: recipientId
@@ -50,6 +52,7 @@ export const sendTextMessage = async (recipientId: string, messageText: string) 
 }
 
 export const markSeen = async (psid: string) => {
+    console.log('mark seen message API')
     const messageData: MessengerAPIPayload = {
         recipient: {
             id: psid
